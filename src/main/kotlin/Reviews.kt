@@ -4,9 +4,11 @@ import org.jsoup.Jsoup
 import java.net.URI
 
 fun main(args: Array<String>) {
-    (1..10).forEach {
-        scrape("http://www.blabbermouth.net/cdreviews/page/$it").map(::toJson).map(::println)
-    }
+    (1..50).map { scrape("http://www.blabbermouth.net/cdreviews/page/$it") }
+      .flatMap { it }
+      .sortedByDescending { it.rating }
+      .map(::toJson)
+      .map(::println)
 }
 
 fun scrape(url: String): List<Review> = Jsoup.connect(url).get().run {
